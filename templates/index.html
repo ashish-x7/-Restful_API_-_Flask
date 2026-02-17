@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blue Dart AWB Tracker</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <main class="container">
+    <h1>Blue Dart AWB Status Tracker</h1>
+    <p class="subtitle">AWB number daaliye aur shipment ka latest status dekhiye.</p>
+
+    <form method="post" class="card">
+      <label for="awb">AWB Number</label>
+      <input id="awb" name="awb" value="{{ awb }}" placeholder="e.g. 12345678901" required>
+      <button type="submit">Track Shipment</button>
+    </form>
+
+    {% if result %}
+      <section class="card result">
+        <h2>Tracking Result</h2>
+
+        {% if result.error %}
+          <p class="error">{{ result.error }}</p>
+          {% if result.tracking_url %}
+            <p>Direct Blue Dart link: <a href="{{ result.tracking_url }}" target="_blank" rel="noopener">Open tracking page</a></p>
+          {% endif %}
+        {% else %}
+          <p><strong>AWB:</strong> {{ result.awb }}</p>
+          <p><strong>Status:</strong> {{ result.status }}</p>
+          <p><strong>Details:</strong> {{ result.details }}</p>
+          <p><strong>Source:</strong> <a href="{{ result.source_url }}" target="_blank" rel="noopener">Blue Dart page</a></p>
+
+          <h3>Recent Timeline</h3>
+          {% if result.history %}
+            <ul>
+              {% for item in result.history %}
+              <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p>No detailed timeline parsed from response.</p>
+          {% endif %}
+        {% endif %}
+      </section>
+    {% endif %}
+  </main>
+</body>
+</html>
